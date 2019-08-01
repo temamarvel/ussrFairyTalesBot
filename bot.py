@@ -33,7 +33,7 @@ REQUEST_KWARGS = {
     #  }
 }
 
-updater = Updater(token=TOKEN, use_context=True, request_kwargs=REQUEST_KWARGS)
+updater = Updater(token=TOKEN, use_context=True)
 
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
