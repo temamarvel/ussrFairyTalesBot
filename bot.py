@@ -24,13 +24,13 @@ def echo(update, context):
 
 TOKEN = '668429632:AAHheR0-J4RfL1LYLOtX5nDTHfs4WJJrCWw'
 
-REQUEST_KWARGS={
+REQUEST_KWARGS = {
     'proxy_url': 'socks5://104.238.187.21:32245',
     # Optional, if you need authentication:
-#    'urllib3_proxy_kwargs': {
-#        'username': 'PROXY_USER',
-#        'password': 'PROXY_PASS',
-  #  }
+    #    'urllib3_proxy_kwargs': {
+    #        'username': 'PROXY_USER',
+    #        'password': 'PROXY_PASS',
+    #  }
 }
 
 updater = Updater(token=TOKEN, use_context=True, request_kwargs=REQUEST_KWARGS)
