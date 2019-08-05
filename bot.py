@@ -6,7 +6,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 
 def hello(update, context):
-    update.message.reply_text('Hello {} {}'.format(update.message.from_user.first_name + update.message.from_user.first_name))
+    update.message.reply_text('Hello {} {}'.format(update.message.from_user.first_name))
 
 
 def custom(update, context):
