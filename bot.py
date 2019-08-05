@@ -1,5 +1,6 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
+import os
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -39,6 +40,9 @@ updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('custom', custom))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
+
+port = os.getenv('PORT', default=8000)
+updater.start_webhook()
 
 updater.start_polling()
 updater.idle()
