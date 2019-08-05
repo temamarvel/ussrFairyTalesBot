@@ -24,6 +24,7 @@ def echo(update, context):
 
 
 TOKEN = '668429632:AAHheR0-J4RfL1LYLOtX5nDTHfs4WJJrCWw'
+PORT = int(os.environ.get('PORT', '8443'))
 
 REQUEST_KWARGS = {
     'proxy_url': 'socks5://104.238.187.21:32245',
@@ -41,8 +42,8 @@ updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('custom', custom))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
 
-port = os.getenv('PORT', default=8000)
-updater.start_webhook()
+updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+updater.bot.set_webhook("https://calm-shelf-64757.herokuapp.com/" + TOKEN)
 
-updater.start_polling()
+#updater.start_polling()
 updater.idle()
