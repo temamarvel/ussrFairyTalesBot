@@ -49,7 +49,7 @@ cursor.execute('SELECT surname FROM directors WHERE name = %s', ('Олег',))
 record = cursor.fetchone()
 
 def custom(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id, text=record.encode("utf-8"))
+    context.bot.send_message(chat_id=update.message.chat_id, text=record[0].encode("utf-8"))
     #context.bot.send_photo(chat_id=update.message.chat_id, photo=open('images/414.png', 'rb'))
 
 updater.dispatcher.add_handler(CommandHandler('custom', custom))
