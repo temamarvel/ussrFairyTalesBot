@@ -11,9 +11,7 @@ def hello(update, context):
     update.message.reply_text('Hello {}'.format(update.message.from_user.first_name))
 
 
-def custom(update, context):
-    update.message.reply_text('Custom answer')
-    #context.bot.send_photo(chat_id=update.message.chat_id, photo=open('images/414.png', 'rb'))
+
 
 
 def start(update, context):
@@ -50,7 +48,11 @@ cursor = conn.cursor()
 cursor.execute('SELECT surname FROM directors WHERE name = %s', ('Олег',))
 record = cursor.fetchone()
 
-updater.dispatcher.add_handler(CommandHandler(record, custom))
+def custom(update, context):
+    update.message.reply_text(record)
+    #context.bot.send_photo(chat_id=update.message.chat_id, photo=open('images/414.png', 'rb'))
+
+updater.dispatcher.add_handler(CommandHandler('custom', custom))
 
 cursor.close()
 conn.close()
