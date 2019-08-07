@@ -19,10 +19,14 @@ def start(update, context):
 
 
 def echo(update, context):
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
     cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
     record = cursor.fetchone()
     context.bot.send_message(chat_id=update.message.chat_id, text=record[0])
+    cursor.close()
+    conn.close()
 
 
 TOKEN = '668429632:AAHheR0-J4RfL1LYLOtX5nDTHfs4WJJrCWw'
@@ -46,8 +50,7 @@ updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-cursor = conn.cursor()
+
 
 
 def custom(update, context):
@@ -58,8 +61,7 @@ def custom(update, context):
 
 updater.dispatcher.add_handler(CommandHandler('custom', custom))
 
-cursor.close()
-conn.close()
+
 
 updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
 updater.bot.set_webhook("https://calm-shelf-64757.herokuapp.com/" + TOKEN)
