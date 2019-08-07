@@ -47,7 +47,7 @@ DATABASE_URL = os.environ['DATABASE_URL']
 
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = conn.cursor()
-cursor.execute('SELECT * FROM directors LIMIT 10')
+cursor.execute('SELECT surname FROM directors WHERE name = %s', ('Олег',))
 record = cursor.fetchone()
 
 updater.dispatcher.add_handler(CommandHandler(record, custom))
