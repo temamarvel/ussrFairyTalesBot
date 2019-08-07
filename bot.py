@@ -1,6 +1,7 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
 import os
+import psycopg2
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -39,8 +40,20 @@ updater = Updater(token=TOKEN, use_context=True)
 
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CommandHandler('custom', custom))
+
 updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
+
+DATABASE_URL = os.environ['DATABASE_URL']
+
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+cursor = conn.cursor()
+cursor.execute('SELECT * FROM directors LIMIT 10')
+record = cursor.fetchone()
+
+updater.dispatcher.add_handler(CommandHandler(record, custom))
+
+cursor.close()
+conn.close()
 
 updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
 updater.bot.set_webhook("https://calm-shelf-64757.herokuapp.com/" + TOKEN)
