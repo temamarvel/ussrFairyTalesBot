@@ -36,7 +36,7 @@ REQUEST_KWARGS = {
 
 updater = Updater(token=TOKEN, use_context=True)
 
-updater.dispatcher.add_handler(CommandHandler('hello', hello))
+updater.dispatcher.add_handler(CommandHandler('привет', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 
 updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
