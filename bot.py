@@ -24,7 +24,7 @@ def echo(update, context):
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
     cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
     record = cursor.fetchone()
-    context.bot.send_message(chat_id=update.message.chat_id, text=record[0])
+    context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
     cursor.close()
     conn.close()
 
@@ -59,8 +59,8 @@ def custom(update, context):
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
     #context.bot.send_photo(chat_id=update.message.chat_id, photo=open('images/414.png', 'rb'))
 
-updater.dispatcher.add_handler(CommandHandler('custom', custom))
 
+updater.dispatcher.add_handler(CommandHandler('custom', custom))
 
 
 updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
