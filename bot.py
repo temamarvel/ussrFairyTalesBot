@@ -25,6 +25,8 @@ def echo(update, context):
     cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
     record = cursor.fetchone()
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
+    context.bot.send_photo(chat_id=update.message.chat_id, photo='https://storage.yandexcloud.net/botdatabucket/test_image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=07838786945a6d4db9a48879cd8ca10a75569b1eca9cc7c145fe6b22e50623cd&X-Amz-Date=20191011T062912Z&X-Amz-Credential=I89EjR7hpjWoYGE7xm7A%2F20191011%2Fus-east-1%2Fs3%2Faws4_request')
+    context.bot.send_message(chat_id=update.message.chat_id, text="Try to send image from storage")
     cursor.close()
     conn.close()
 
@@ -57,7 +59,6 @@ def custom(update, context):
     #cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
     #record = cursor.fetchone()
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
-    #context.bot.send_photo(chat_id=update.message.chat_id, photo=open('images/414.png', 'rb'))
 
 
 updater.dispatcher.add_handler(CommandHandler('custom', custom))
