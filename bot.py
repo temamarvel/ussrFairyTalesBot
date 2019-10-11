@@ -1,3 +1,4 @@
+from telegram import ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import boto3
 import logging
@@ -39,7 +40,7 @@ def echo(update, context):
 
     url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": "test_audio.mp3"}, ExpiresIn=100)
     #context.bot.send_audio(chat_id=update.message.chat_id, audio=url)
-    context.bot.send_message(chat_id=update.message.chat_id, text='[download audio:](' + url + ')', parse_mode=telegram.ParseMode.MARKDOWN)
+    context.bot.send_message(chat_id=update.message.chat_id, text='[download audio:](' + url + ')', parse_mode=ParseMode.MARKDOWN)
 
     cursor.close()
     conn.close()
