@@ -39,9 +39,10 @@ def echo(update, context):
     context.bot.send_photo(chat_id=update.message.chat_id, photo=url)
     shorterer = TinyUrlcom()
     short_url = shorterer.shorten_url(url)
+    context.bot.send_message(chat_id=update.message.chat_id, text="download audio: " + os.linesep + short_url)
     #url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": "test_audio.mp3"}, ExpiresIn=100)
     #context.bot.send_audio(chat_id=update.message.chat_id, audio=url)
-    context.bot.send_message(chat_id=update.message.chat_id, text="download audio: " + os.linesep + url)
+    context.bot.send_message(chat_id=update.message.chat_id, text=short_url)
 
     cursor.close()
     conn.close()
