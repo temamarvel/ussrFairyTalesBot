@@ -1,6 +1,6 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import boto3
-from botocore.client import Config
+from pyshorturl import TinyUrlcom
 import logging
 import os
 import psycopg2
@@ -37,10 +37,12 @@ def echo(update, context):
     url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": "test_image.png"}, ExpiresIn=100)
     #context.bot.send_photo(chat_id=update.message.chat_id, photo='https://storage.yandexcloud.net/botdatabucket/test_image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=07838786945a6d4db9a48879cd8ca10a75569b1eca9cc7c145fe6b22e50623cd&X-Amz-Date=20191011T062912Z&X-Amz-Credential=I89EjR7hpjWoYGE7xm7A%2F20191011%2Fus-east-1%2Fs3%2Faws4_request')
     context.bot.send_photo(chat_id=update.message.chat_id, photo=url)
-    url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": "test_audio.mp3"},
-                                    ExpiresIn=100)
-    context.bot.send_audio(chat_id=update.message.chat_id, audio=url)
-    context.bot.send_message(chat_id=update.message.chat_id, text="Try to send image from storage")
+    shorterer = TinyUrlcom()
+    short_url = shorterer.shorten_url(url)
+    #url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": "test_audio.mp3"}, ExpiresIn=100)
+    #context.bot.send_audio(chat_id=update.message.chat_id, audio=url)
+    context.bot.send_message(chat_id=update.message.chat_id, text="download audio: " + os.linesep + short_url)
+
     cursor.close()
     conn.close()
 
