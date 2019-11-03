@@ -40,7 +40,7 @@ def echo(update, context):
 
     audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": "Волшебная лампа Алладина/Волшебная лампа Алладина.mp3"}, ExpiresIn=100)
     #context.bot.send_audio(chat_id=update.message.chat_id, audio=url)
-    context.bot.send_message(chat_id=update.message.chat_id, text='[\u200c](' + photo_url + ')' + ' [download audio:](' + audio_url + ')', parse_mode=ParseMode.MARKDOWN)
+    context.bot.send_message(chat_id=update.message.chat_id, text='[Cover](' + photo_url + ')' + ' [download audio:](' + audio_url + ')', parse_mode=ParseMode.MARKDOWN)
 
     cursor.close()
     conn.close()
