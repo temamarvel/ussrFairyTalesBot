@@ -36,8 +36,8 @@ def echo(update, context):
     # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
 
     cover_name = update.message.text + '/' + 'cover.jpg'
-    audio_name = update.message.text = '/' + update.message.text
-    
+    audio_name = update.message.text + '/' + update.message.text
+
     context.bot.send_message(chat_id=update.message.chat_id, text=cover_name.lower())
     context.bot.send_message(chat_id=update.message.chat_id, text=audio_name.lower())
 
