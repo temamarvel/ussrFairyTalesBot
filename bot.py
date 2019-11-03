@@ -37,6 +37,9 @@ def echo(update, context):
 
     cover_name = update.message.text + '/' + 'cover.jpg'
     audio_name = update.message.text = '/' + update.message.text
+    
+    context.bot.send_message(chat_id=update.message.chat_id, text=cover_name.lower())
+    context.bot.send_message(chat_id=update.message.chat_id, text=audio_name.lower())
 
     photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name.lower()}, ExpiresIn=100)
     audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name.lower()}, ExpiresIn=100)
