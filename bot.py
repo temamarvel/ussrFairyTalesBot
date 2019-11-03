@@ -38,8 +38,8 @@ def echo(update, context):
     cover_name = update.message.text + '/' + 'cover.jpg'
     audio_name = update.message.text = '/' + update.message.text
 
-    photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name}, ExpiresIn=100)
-    audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name}, ExpiresIn=100)
+    photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name.lower()}, ExpiresIn=100)
+    audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name.lower()}, ExpiresIn=100)
 
     context.bot.send_photo(chat_id=update.message.chat_id,
                            photo=photo_url,
