@@ -28,22 +28,26 @@ def start(update, context):
 
 
 def echo(update, context):
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    cursor = conn.cursor()
-    context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
-    cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
-    record = cursor.fetchone()
-    context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
-    photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": "Волшебная лампа Алладина/aladdin.jpg"}, ExpiresIn=100)
-    #context.bot.send_photo(chat_id=update.message.chat_id, photo='https://storage.yandexcloud.net/botdatabucket/test_image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=07838786945a6d4db9a48879cd8ca10a75569b1eca9cc7c145fe6b22e50623cd&X-Amz-Date=20191011T062912Z&X-Amz-Credential=I89EjR7hpjWoYGE7xm7A%2F20191011%2Fus-east-1%2Fs3%2Faws4_request')
-    context.bot.send_photo(chat_id=update.message.chat_id, photo=photo_url, caption='[cover](' + photo_url + ')', parse_mode=ParseMode.MARKDOWN)
+    # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    # cursor = conn.cursor()
+    # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
+    # cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
+    # record = cursor.fetchone()
+    # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
 
-    audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": "Волшебная лампа Алладина/Волшебная лампа Алладина.mp3"}, ExpiresIn=100)
-    #context.bot.send_audio(chat_id=update.message.chat_id, audio=url)
-    context.bot.send_message(chat_id=update.message.chat_id, text='[Cover](' + photo_url + ')' + ' [download audio:](' + audio_url + ')', parse_mode=ParseMode.MARKDOWN)
+    cover_name = update.message.text + '/' + 'cover.jpg'
+    audio_name = update.message.text = '/' + update.message.text
 
-    cursor.close()
-    conn.close()
+    photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name}, ExpiresIn=100)
+    audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name}, ExpiresIn=100)
+
+    context.bot.send_photo(chat_id=update.message.chat_id,
+                           photo=photo_url,
+                           caption='[download audio](' + audio_url + ')',
+                           parse_mode=ParseMode.MARKDOWN)
+
+    # cursor.close()
+    # conn.close()
 
 
 TOKEN = '668429632:AAHheR0-J4RfL1LYLOtX5nDTHfs4WJJrCWw'
