@@ -48,7 +48,7 @@ def echo(update, context):
                            caption='[download audio](' + audio_url + ')',
                            parse_mode=ParseMode.MARKDOWN)
 
-    context.bot.send_message(chat_id=update.message.chat_id, text=answer)
+    context.bot.send_message(chat_id=update.message.chat_id, text='error')
 
     # cursor.close()
     # conn.close()
