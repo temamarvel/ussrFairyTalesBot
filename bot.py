@@ -1,4 +1,4 @@
-from telegram import ParseMode
+from telegram import ParseMode, ChatAction
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import boto3
 import logging
@@ -28,6 +28,7 @@ def start(update, context):
 
 
 def echo(update, context):
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
     context.bot.send_message(chat_id=update.message.chat_id, text='searching...')
     # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     # cursor = conn.cursor()
