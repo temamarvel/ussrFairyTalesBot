@@ -41,12 +41,14 @@ def echo(update, context):
     photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name.lower()}, ExpiresIn=100)
     audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name.lower()}, ExpiresIn=100)
 
-    context.bot.send_message(chat_id=update.message.chat_id, text=audio_url)
+    #context.bot.send_message(chat_id=update.message.chat_id, text=audio_url)
 
-    context.bot.send_photo(chat_id=update.message.chat_id,
+    answer = context.bot.send_photo(chat_id=update.message.chat_id,
                            photo=photo_url,
                            caption='[download audio](' + audio_url + ')',
                            parse_mode=ParseMode.MARKDOWN)
+
+    context.bot.send_message(chat_id=update.message.chat_id, text=answer)
 
     # cursor.close()
     # conn.close()
