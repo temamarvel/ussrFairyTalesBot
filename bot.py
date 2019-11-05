@@ -28,7 +28,7 @@ def start(update, context):
 
 
 def echo(update, context):
-    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_VIDEO_NOTE)
     #context.bot.send_message(chat_id=update.message.chat_id, text='searching...')
     # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     # cursor = conn.cursor()
