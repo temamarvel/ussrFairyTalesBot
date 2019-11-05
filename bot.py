@@ -8,7 +8,6 @@ import psycopg2
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
-
 session = boto3.session.Session()
 s3 = session.client(
     service_name='s3',
@@ -17,17 +16,26 @@ s3 = session.client(
 
 
 def hello(update, context):
-    update.message.reply_text('Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(update.message.from_user.first_name))
+    update.message.reply_text(
+        'Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(
+            update.message.from_user.first_name))
+
 
 def start(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id, text='Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(update.message.from_user.first_name))
+    context.bot.send_message(chat_id=update.message.chat_id,
+                             text='Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(
+                                 update.message.from_user.first_name))
+
 
 def helpfunc(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id, text='Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(update.message.from_user.first_name))
+    context.bot.send_message(chat_id=update.message.chat_id,
+                             text='Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(
+                                 update.message.from_user.first_name))
+
 
 def echo(update, context):
     context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_VIDEO)
-    #context.bot.send_message(chat_id=update.message.chat_id, text='searching...')
+    # context.bot.send_message(chat_id=update.message.chat_id, text='searching...')
     # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     # cursor = conn.cursor()
     # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
@@ -38,17 +46,20 @@ def echo(update, context):
     cover_name = update.message.text + '/' + 'cover.jpg'
     audio_name = update.message.text + '/' + update.message.text + '.mp3'
 
-    photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name.lower()}, ExpiresIn=100)
-    audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name.lower()}, ExpiresIn=100)
+    photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name.lower()},
+                                          ExpiresIn=100)
+    audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name.lower()},
+                                          ExpiresIn=100)
 
-    #context.bot.send_message(chat_id=update.message.chat_id, text=audio_url)
+    # context.bot.send_message(chat_id=update.message.chat_id, text=audio_url)
 
-    answer = context.bot.send_photo(chat_id=update.message.chat_id,
-                           photo=photo_url,
-                           caption='[download audio](' + audio_url + ')',
-                           parse_mode=ParseMode.MARKDOWN)
-
-    context.bot.send_message(chat_id=update.message.chat_id, text='error')
+    try:
+        context.bot.send_photo(chat_id=update.message.chat_id,
+                               photo=photo_url,
+                               caption='[download audio](' + audio_url + ')',
+                               parse_mode=ParseMode.MARKDOWN)
+    except:
+        context.bot.send_message(chat_id=update.message.chat_id, text='error')
 
     # cursor.close()
     # conn.close()
@@ -77,19 +88,16 @@ updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-
-
 def custom(update, context):
-    #cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
-    #record = cursor.fetchone()
+    # cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
+    # record = cursor.fetchone()
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
 
 
 updater.dispatcher.add_handler(CommandHandler('custom', custom))
 
-
 updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
 updater.bot.set_webhook("https://calm-shelf-64757.herokuapp.com/" + TOKEN)
 
-#updater.start_polling()
+# updater.start_polling()
 updater.idle()
