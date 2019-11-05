@@ -17,18 +17,16 @@ s3 = session.client(
 
 
 def hello(update, context):
-    update.message.reply_text('Привет {}'.format(update.message.from_user.first_name))
-
-
-
-
+    update.message.reply_text('Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(update.message.from_user.first_name))
 
 def start(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id, text="I'm a bot, please talk to me!")
+    context.bot.send_message(chat_id=update.message.chat_id, text='Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(update.message.from_user.first_name))
 
+def helpfunc(update, context):
+    context.bot.send_message(chat_id=update.message.chat_id, text='Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(update.message.from_user.first_name))
 
 def echo(update, context):
-    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_VIDEO_NOTE)
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_VIDEO)
     #context.bot.send_message(chat_id=update.message.chat_id, text='searching...')
     # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     # cursor = conn.cursor()
@@ -68,6 +66,7 @@ updater = Updater(token=TOKEN, use_context=True)
 
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
+updater.dispatcher.add_handler(CommandHandler('help', helpfunc))
 
 updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
 
