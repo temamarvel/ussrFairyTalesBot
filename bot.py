@@ -14,27 +14,26 @@ s3 = session.client(
     endpoint_url='https://storage.yandexcloud.net',
 )
 
+hello_text = 'Привет {}! \n Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. \n Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'
+
+
 
 def hello(update, context):
-    update.message.reply_text(
-        'Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(
-            update.message.from_user.first_name))
+    update.message.reply_text(hello_text.format(update.message.from_user.first_name))
 
 
 def start(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,
-                             text='Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(
-                                 update.message.from_user.first_name))
+                             text=hello_text.format(update.message.from_user.first_name))
 
 
 def helpfunc(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,
-                             text='Привет {}! Я бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. Напииши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'.format(
-                                 update.message.from_user.first_name))
+                             text=hello_text.format(update.message.from_user.first_name))
 
 
 def echo(update, context):
-    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_VIDEO)
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
     # context.bot.send_message(chat_id=update.message.chat_id, text='searching...')
     # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     # cursor = conn.cursor()
@@ -59,7 +58,7 @@ def echo(update, context):
                                caption='[download audio](' + audio_url + ')',
                                parse_mode=ParseMode.MARKDOWN)
     except:
-        context.bot.send_message(chat_id=update.message.chat_id, text='error')
+        context.bot.send_message(chat_id=update.message.chat_id, text='ничего не найдено')
 
     # cursor.close()
     # conn.close()
@@ -78,6 +77,7 @@ REQUEST_KWARGS = {
 }
 
 updater = Updater(token=TOKEN, use_context=True)
+
 
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
