@@ -60,6 +60,7 @@ def echo(update, context):
     context.bot.send_message(chat_id=update.message.chat_id, text=records)
 
     if records is None:
+        context.bot.send_message(chat_id=update.message.chat_id, text=records)
         context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text)
     else:
         for record in records:
