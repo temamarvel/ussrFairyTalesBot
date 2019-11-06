@@ -57,6 +57,8 @@ def echo(update, context):
     cursor.execute(sql_query, search_text)
     records = cursor.fetchall()
 
+    context.bot.send_message(chat_id=update.message.chat_id, text=records)
+
     if records is None:
         context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text)
     else:
