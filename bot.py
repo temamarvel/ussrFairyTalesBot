@@ -43,7 +43,7 @@ def echo(update, context):
     # record = cursor.fetchone()
     # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
 
-    cursor.execute('SELECT title FROM tales WHERE title ILIKE %s', (update.message.text,))
+    cursor.execute('SELECT title FROM tales WHERE title ILIKE %%s%%', (update.message.text,))
     record = cursor.fetchone()
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
 
