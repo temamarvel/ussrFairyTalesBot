@@ -64,8 +64,6 @@ def echo(update, context):
 
 
 def showall(update, context):
-    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
-
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
 
@@ -80,17 +78,28 @@ def showall(update, context):
     conn.close()
 
 
-def get_audio_with_image_from_cloud(context, update, record):
-    title = record[0]
-    cover_name = title + '/' + COVER_IMAGE_NAME
+def get_audio_url(title):
     audio_name = title + '/' + title + '.mp3'
-
-    photo_url = s3.generate_presigned_url("get_object",
-                                          Params={"Bucket": BUCKET_NAME, "Key": cover_name.lower()},
-                                          ExpiresIn=100)
     audio_url = s3.generate_presigned_url("get_object",
                                           Params={"Bucket": BUCKET_NAME, "Key": audio_name.lower()},
                                           ExpiresIn=100)
+    return audio_url
+
+
+def get_cover_image_url(title):
+    cover_name = title + '/' + COVER_IMAGE_NAME
+    photo_url = s3.generate_presigned_url("get_object",
+                                          Params={"Bucket": BUCKET_NAME, "Key": cover_name.lower()},
+                                          ExpiresIn=100)
+    return photo_url
+
+
+def get_audio_with_image_from_cloud(context, update, record):
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
+    title = record[0]
+
+    photo_url = get_cover_image_url(title)
+    audio_url = get_audio_url(title)
 
     try:
         context.bot.send_photo(chat_id=update.message.chat_id,
@@ -102,12 +111,10 @@ def get_audio_with_image_from_cloud(context, update, record):
 
 
 def get_audio_from_cloud(context, update, record):
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
     title = record[0]
-    audio_name = title + '/' + title + '.mp3'
 
-    audio_url = s3.generate_presigned_url("get_object",
-                                          Params={"Bucket": BUCKET_NAME, "Key": audio_name.lower()},
-                                          ExpiresIn=100)
+    audio_url = get_audio_url(title)
 
     try:
         context.bot.send_message(chat_id=update.message.chat_id,
