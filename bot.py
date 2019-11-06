@@ -8,13 +8,17 @@ import psycopg2
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
+DATABASE_URL = os.environ['DATABASE_URL']
+
 session = boto3.session.Session()
 s3 = session.client(
     service_name='s3',
     endpoint_url='https://storage.yandexcloud.net',
 )
 
-hello_text = 'Привет {}! \n\nЯ бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. \n\nНапиши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'
+hello_text = 'Привет {}! ' \
+             '\n\nЯ бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. ' \
+             '\n\nНапиши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'
 
 
 def hello(update, context):
@@ -43,8 +47,6 @@ def echo(update, context):
     cursor.execute(sql_query, search_text)
     records = cursor.fetchall()
 
-    # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
-
     for record in records:
         get_audio_from_cloud(context, update, record)
 
@@ -58,9 +60,11 @@ def get_audio_from_cloud(context, update, record):
 
     cover_name = title + '/' + 'cover.jpg'
     audio_name = title + '/' + title + '.mp3'
-    photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name.lower()},
+    photo_url = s3.generate_presigned_url("get_object",
+                                          Params={"Bucket": "botdatabucket", "Key": cover_name.lower()},
                                           ExpiresIn=100)
-    audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name.lower()},
+    audio_url = s3.generate_presigned_url("get_object",
+                                          Params={"Bucket": "botdatabucket", "Key": audio_name.lower()},
                                           ExpiresIn=100)
 
     try:
@@ -75,37 +79,14 @@ def get_audio_from_cloud(context, update, record):
 TOKEN = '668429632:AAHheR0-J4RfL1LYLOtX5nDTHfs4WJJrCWw'
 PORT = int(os.environ.get('PORT', '8443'))
 
-REQUEST_KWARGS = {
-    'proxy_url': 'socks5://104.238.187.21:32245',
-    # Optional, if you need authentication:
-    #    'urllib3_proxy_kwargs': {
-    #        'username': 'PROXY_USER',
-    #        'password': 'PROXY_PASS',
-    #  }
-}
-
 updater = Updater(token=TOKEN, use_context=True)
-
 
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('help', helpfunc))
-
 updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
-
-DATABASE_URL = os.environ['DATABASE_URL']
-
-
-def custom(update, context):
-    # cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
-    # record = cursor.fetchone()
-    context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
-
-
-updater.dispatcher.add_handler(CommandHandler('custom', custom))
 
 updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
 updater.bot.set_webhook("https://calm-shelf-64757.herokuapp.com/" + TOKEN)
 
-# updater.start_polling()
 updater.idle()
