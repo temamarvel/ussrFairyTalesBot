@@ -33,13 +33,13 @@ def helpfunc(update, context):
 
 def echo(update, context):
     context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
-    # context.bot.send_message(chat_id=update.message.chat_id, text='searching...')
-    # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    # cursor = conn.cursor()
-    # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
-    # cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
-    # record = cursor.fetchone()
-    # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
+
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
+    context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
+    cursor.execute('SELECT name FROM tales WHERE name = %%s', (update.message.text,))
+    record = cursor.fetchone()
+    context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
 
     cover_name = update.message.text + '/' + 'cover.jpg'
     audio_name = update.message.text + '/' + update.message.text + '.mp3'
