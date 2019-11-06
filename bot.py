@@ -37,28 +37,30 @@ def echo(update, context):
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
 
-    # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
+    sql_query = 'SELECT title FROM tales WHERE title LIKE %s'
+    search_text = ['%' + update.message.text + '%']
 
-    # cursor.execute('SELECT surname FROM directors WHERE name = %s', (update.message.text,))
-    # record = cursor.fetchone()
+    cursor.execute(sql_query, search_text)
+    records = cursor.fetchall()
+
     # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
 
-    search_text = ['%' + update.message.text + '%']
-    context.bot.send_message(chat_id=update.message.chat_id, text=search_text)
+    for record in records:
+        get_audio_from_cloud(context, update, record)
 
-    cursor.execute('SELECT title FROM tales WHERE title LIKE %s', search_text)
-    record = cursor.fetchone()
-    context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
+    cursor.close()
+    conn.close()
 
-    cover_name = update.message.text + '/' + 'cover.jpg'
-    audio_name = update.message.text + '/' + update.message.text + '.mp3'
 
+def get_audio_from_cloud(context, update, record):
+    context.bot.send_message(chat_id=update.message.chat_id, text=record)
+
+    cover_name = record + '/' + 'cover.jpg'
+    audio_name = record + '/' + record + '.mp3'
     photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name.lower()},
                                           ExpiresIn=100)
     audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name.lower()},
                                           ExpiresIn=100)
-
-    # context.bot.send_message(chat_id=update.message.chat_id, text=audio_url)
 
     try:
         context.bot.send_photo(chat_id=update.message.chat_id,
@@ -67,9 +69,6 @@ def echo(update, context):
                                parse_mode=ParseMode.MARKDOWN)
     except:
         context.bot.send_message(chat_id=update.message.chat_id, text='ничего не найдено')
-
-    cursor.close()
-    conn.close()
 
 
 TOKEN = '668429632:AAHheR0-J4RfL1LYLOtX5nDTHfs4WJJrCWw'
