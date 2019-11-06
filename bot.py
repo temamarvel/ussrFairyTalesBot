@@ -37,7 +37,7 @@ def echo(update, context):
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
-    cursor.execute('SELECT tales FROM title WHERE name ILIKE %%s', (update.message.text,))
+    cursor.execute('SELECT title FROM tales WHERE name ILIKE %%s', (update.message.text,))
     record = cursor.fetchone()
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
 
