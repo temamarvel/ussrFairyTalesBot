@@ -46,43 +46,43 @@ def helpfunc(update, context):
 
 
 def echo(update, context):
-    try:
-        context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
 
-        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-        cursor = conn.cursor()
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
 
-        sql_query = 'SELECT title FROM tales WHERE title LIKE %s'
-        search_text = ['%' + update.message.text + '%']
+    sql_query = 'SELECT title FROM tales WHERE title LIKE %s'
+    search_text = ['%' + update.message.text + '%']
 
-        cursor.execute(sql_query, search_text)
-        records = cursor.fetchall()
+    cursor.execute(sql_query, search_text)
+    records = cursor.fetchall()
 
+    if records is None:
+        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text)
+    else:
         for record in records:
             get_audio_with_image_from_cloud(context, update, record)
 
-        cursor.close()
-        conn.close()
-    except:
-        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text)
+    cursor.close()
+    conn.close()
 
 
 def showall(update, context):
-    try:
-        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-        cursor = conn.cursor()
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
 
-        sql_query = 'SELECT title FROM tales'
-        cursor.execute(sql_query)
-        records = cursor.fetchall()
+    sql_query = 'SELECT title FROM tales'
+    cursor.execute(sql_query)
+    records = cursor.fetchall()
 
-        for record in records:
-            get_audio_from_cloud(context, update, record)
-
-        cursor.close()
-        conn.close()
-    except:
+    if records is None:
         context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text)
+    else:
+        for record in records:
+            get_audio_with_image_from_cloud(context, update, record)
+
+    cursor.close()
+    conn.close()
 
 
 def get_audio_url(title):
