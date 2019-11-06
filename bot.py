@@ -53,7 +53,7 @@ def echo(update, context):
 
 
 def get_audio_from_cloud(context, update, record):
-    context.bot.send_message(chat_id=update.message.chat_id, text=record)
+    context.bot.send_message(chat_id=update.message.chat_id, text=record[0])
 
     cover_name = record + '/' + 'cover.jpg'
     audio_name = record + '/' + record + '.mp3'
