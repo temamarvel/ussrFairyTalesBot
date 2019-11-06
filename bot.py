@@ -21,8 +21,7 @@ s3 = session.client(
     endpoint_url='https://storage.yandexcloud.net',
 )
 
-nothing_for_request = 'по запросу "{}" ничего не обнаружено'
-nothing_text = 'ничего не найдено'
+nothing_text = 'по запросу "{}" ничего не обнаружено'
 
 hello_text = 'Привет {}! ' \
              '\n\nЯ бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. ' \
@@ -48,20 +47,19 @@ def helpfunc(update, context):
 def echo(update, context):
     context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
 
+    text = update.message.text
+
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
 
     sql_query = 'SELECT title FROM tales WHERE title LIKE %s'
-    search_text = ['%' + update.message.text + '%']
+    search_text = ['%' + text + '%']
 
     cursor.execute(sql_query, search_text)
     records = cursor.fetchall()
 
-    context.bot.send_message(chat_id=update.message.chat_id, text=records)
-
     if (records is None) or (not records):
-        context.bot.send_message(chat_id=update.message.chat_id, text=records)
-        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text)
+        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text.format(text))
     else:
         for record in records:
             get_audio_with_image_from_cloud(context, update, record)
@@ -74,12 +72,14 @@ def showall(update, context):
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
 
+    text = update.message.text
+
     sql_query = 'SELECT title FROM tales'
     cursor.execute(sql_query)
     records = cursor.fetchall()
 
     if records is None:
-        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text)
+        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text.format(text))
     else:
         for record in records:
             get_audio_with_image_from_cloud(context, update, record)
@@ -117,7 +117,7 @@ def get_audio_with_image_from_cloud(context, update, record):
                                caption='[download audio](' + audio_url + ')',
                                parse_mode=ParseMode.MARKDOWN)
     except:
-        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_for_request.format(title))
+        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text.format(title))
 
 
 def get_audio_from_cloud(context, update, record):
@@ -131,7 +131,7 @@ def get_audio_from_cloud(context, update, record):
                                  text='[' + title + '](' + audio_url + ')',
                                  parse_mode=ParseMode.MARKDOWN)
     except:
-        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_for_request.format(title))
+        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text.format(title))
 
 
 updater = Updater(token=TOKEN, use_context=True)
