@@ -53,18 +53,34 @@ def echo(update, context):
     records = cursor.fetchall()
 
     for record in records:
+        get_audio_with_image_from_cloud(context, update, record)
+
+    cursor.close()
+    conn.close()
+
+
+def showall(update, context):
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.UPLOAD_AUDIO)
+
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
+
+    sql_query = 'SELECT title FROM tales'
+    cursor.execute(sql_query)
+    records = cursor.fetchall()
+
+    for record in records:
         get_audio_from_cloud(context, update, record)
 
     cursor.close()
     conn.close()
 
 
-def get_audio_from_cloud(context, update, record):
+def get_audio_with_image_from_cloud(context, update, record):
     title = record[0]
-    context.bot.send_message(chat_id=update.message.chat_id, text=title)
-
     cover_name = title + '/' + COVER_IMAGE_NAME
     audio_name = title + '/' + title + '.mp3'
+
     photo_url = s3.generate_presigned_url("get_object",
                                           Params={"Bucket": BUCKET_NAME, "Key": cover_name.lower()},
                                           ExpiresIn=100)
@@ -81,11 +97,28 @@ def get_audio_from_cloud(context, update, record):
         context.bot.send_message(chat_id=update.message.chat_id, text='ничего не найдено')
 
 
+def get_audio_from_cloud(context, update, record):
+    title = record[0]
+    audio_name = title + '/' + title + '.mp3'
+
+    audio_url = s3.generate_presigned_url("get_object",
+                                          Params={"Bucket": BUCKET_NAME, "Key": audio_name.lower()},
+                                          ExpiresIn=100)
+
+    try:
+        context.bot.send_message(chat_id=update.message.chat_id,
+                                 text='[' + title + '](' + audio_url + ')',
+                                 parse_mode=ParseMode.MARKDOWN)
+    except:
+        context.bot.send_message(chat_id=update.message.chat_id, text='ничего не найдено')
+
+
 updater = Updater(token=TOKEN, use_context=True)
 
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('help', helpfunc))
+updater.dispatcher.add_handler(CommandHandler('showall', showall))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, echo))
 
 updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
