@@ -53,10 +53,11 @@ def echo(update, context):
 
 
 def get_audio_from_cloud(context, update, record):
-    context.bot.send_message(chat_id=update.message.chat_id, text=record[0])
+    title = record[0]
+    context.bot.send_message(chat_id=update.message.chat_id, text=title)
 
-    cover_name = record + '/' + 'cover.jpg'
-    audio_name = record + '/' + record + '.mp3'
+    cover_name = title + '/' + 'cover.jpg'
+    audio_name = title + '/' + title + '.mp3'
     photo_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": cover_name.lower()},
                                           ExpiresIn=100)
     audio_url = s3.generate_presigned_url("get_object", Params={"Bucket": "botdatabucket", "Key": audio_name.lower()},
