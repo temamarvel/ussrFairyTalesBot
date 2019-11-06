@@ -52,7 +52,7 @@ def echo(update, context):
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
 
-    sql_query = 'SELECT title FROM tales WHERE title LIKE %s'
+    sql_query = 'SELECT title FROM tales WHERE title ILIKE %s'
     search_text = ['%' + text + '%']
 
     cursor.execute(sql_query, search_text)
