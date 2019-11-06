@@ -21,12 +21,14 @@ s3 = session.client(
     endpoint_url='https://storage.yandexcloud.net',
 )
 
+nothing_text = 'по запросу "{}" ничего не обнаружено'
+
 hello_text = 'Привет {}! ' \
              '\n\nЯ бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. ' \
              '\n\nНапиши полное название сказки которую ищешь и я постараюсь найти ее для тебя.'
 
 help_text = 'Чтобы найти сказку просто напиши боту её название или его часть' \
-            '\nКоманды:' \
+            '\n\nКоманды:' \
             '\n/start - приветствие' \
             '\n/help - выподит список всех команд' \
             '\n/showall - выподит список доступных аудио-сказок'
@@ -96,7 +98,7 @@ def get_audio_with_image_from_cloud(context, update, record):
                                caption='[download audio](' + audio_url + ')',
                                parse_mode=ParseMode.MARKDOWN)
     except:
-        context.bot.send_message(chat_id=update.message.chat_id, text='ничего не найдено')
+        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text.format(title))
 
 
 def get_audio_from_cloud(context, update, record):
@@ -112,7 +114,7 @@ def get_audio_from_cloud(context, update, record):
                                  text='[' + title + '](' + audio_url + ')',
                                  parse_mode=ParseMode.MARKDOWN)
     except:
-        context.bot.send_message(chat_id=update.message.chat_id, text='ничего не найдено')
+        context.bot.send_message(chat_id=update.message.chat_id, text=nothing_text.format(title))
 
 
 updater = Updater(token=TOKEN, use_context=True)
