@@ -36,7 +36,9 @@ def echo(update, context):
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
-    context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
+
+    # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
+
     cursor.execute('SELECT title FROM tales WHERE name = %s', (update.message.text,))
     record = cursor.fetchone()
     context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record)
@@ -59,8 +61,8 @@ def echo(update, context):
     except:
         context.bot.send_message(chat_id=update.message.chat_id, text='ничего не найдено')
 
-    # cursor.close()
-    # conn.close()
+    cursor.close()
+    conn.close()
 
 
 TOKEN = '668429632:AAHheR0-J4RfL1LYLOtX5nDTHfs4WJJrCWw'
