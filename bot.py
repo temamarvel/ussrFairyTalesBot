@@ -44,6 +44,7 @@ def echo(update, context):
     # context.bot.send_message(chat_id=update.message.chat_id, text=update.message.text + " " + record[0])
 
     search_text = ['%' + update.message.text + '%']
+    context.bot.send_message(chat_id=update.message.chat_id, text=search_text)
 
     cursor.execute('SELECT title FROM tales WHERE title LIKE %s', search_text)
     record = cursor.fetchone()
