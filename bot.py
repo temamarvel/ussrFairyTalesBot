@@ -23,11 +23,13 @@ s3 = session.client(
 
 hello_text = 'Привет {}! ' \
              '\n\nЯ бот с аудиосказками и аудиоспектаклями. Пока я в стадии тестирования и умею не много. ' \
-             '\n\nНапиши полное название сказки которую ищещь и я постараюсь найти ее для тебя.'
+             '\n\nНапиши полное название сказки которую ищешь и я постараюсь найти ее для тебя.'
 
-
-def hello(update, context):
-    update.message.reply_text(hello_text.format(update.message.from_user.first_name))
+help_text = 'Чтобы найти сказку просто напиши боту её название или его часть' \
+            '\nКоманды:' \
+            '\n/start - приветствие' \
+            '\n/help - выподит список всех команд' \
+            '\n/showall - выподит список доступных аудио-сказок'
 
 
 def start(update, context):
@@ -37,7 +39,7 @@ def start(update, context):
 
 def helpfunc(update, context):
     context.bot.send_message(chat_id=update.message.chat_id,
-                             text=hello_text.format(update.message.from_user.first_name))
+                             text=help_text)
 
 
 def echo(update, context):
@@ -115,7 +117,6 @@ def get_audio_from_cloud(context, update, record):
 
 updater = Updater(token=TOKEN, use_context=True)
 
-updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('help', helpfunc))
 updater.dispatcher.add_handler(CommandHandler('showall', showall))
